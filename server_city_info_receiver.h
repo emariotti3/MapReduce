@@ -10,8 +10,8 @@ class CityInfoReceiver: public Thread{
     public:
         CityInfoReceiver(Socket &listener);
         void run();
-        bool hasWeatherForDay(int day);
-        CityWeather* getWeatherForDay(int &day);
+        bool hasWeatherForDay(const int &day);
+        CityWeather* getWeatherForDay(const int &day);
         virtual ~CityInfoReceiver();
     protected:
     private:
