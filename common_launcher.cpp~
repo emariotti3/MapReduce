@@ -1,0 +1,35 @@
+#include <sstream>
+#include <string>
+#include "common_launcher.h"
+#include "client.h"
+#include "server.h"
+
+#define CLIENT_MODE "client"
+#define SERVER_MODE "server"
+
+Launcher::Launcher(int argc, char *argv[]){
+    //TODO: Refactoring!!
+    std::stringstream stream(*argv);
+    const std::string client_mode = CLIENT_MODE;
+	const std::string server_mode = SERVER_MODE;
+	std::string mode = "";
+	stream >> mode;
+	bool mode_is_client = client_mode.compare(mode);
+	bool mode_is_server = server_mode.compare(mode);
+
+	if (mode_is_client){
+        std::string hostname = "";
+        std::string port = "";
+        stream >> hostname;
+        stream >> port;
+        Client client(hostname, port);
+        client.run();
+	}else if (mode_is_server){
+        std::string port = "";
+        stream >> port;
+        ClimateServer server(port);
+        server.run();
+	}
+}
+
+Launcher::~Launcher(){}

@@ -1,0 +1,14 @@
+#include "tp.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <sstream>
+#include <iostream>
+#include "SystemError.h"
+#include "Launcher.h"
+
+
+int main(int argc, char *argv[]){
+    Launcher launcher(argc, *argv);
+    return 0;
+}
+

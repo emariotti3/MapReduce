@@ -1,0 +1,63 @@
+#include "server.h"
+#include <sstream>
+#define SERVER_MODE "server"
+
+Server::Server(std::string port):
+port(port){
+    this->hostname = "localhost";
+    this->max_threads = 4;
+}
+
+void Server::main(int argc, char *argv[]){
+    std::stringstream stream(*argv);
+    std::string mode = "";
+	stream >> mode;
+
+    const std::string server_mode = SERVER_MODE;
+    bool mode_is_server = server_mode.compare(mode);
+
+    if (!mode_is_server){
+        //exception!
+    }
+
+    std::string port = "";
+    stream >> port;
+    Server server(port);
+    server.run();
+}
+
+void Server::run(){
+    ClientAcceptor acceptor(this->hostname, this->port);
+    std::vector<CityInfoReceiver*> city_info_rec;
+    acceptor.acceptClients(city_info_rec);
+
+    int max_days = 31;
+    for(int i = 1; i <= max_days; i++){
+        for(size_t j = 0; j < city_info_rec.size(); j++){
+            bool city_has_info_day = city_info_rec[j]->hasWeatherForDay(i);
+            bool day_reducer_exists = (reducers.count(i) > 0 );
+            if(city_has_info_day && !day_reducer_exists){
+                this->reducers.insert(std::map<int, Reducer*>::value_type(i, new Reducer(i)));
+            }
+            if(city_has_info_day){
+                this->reducers[i]->add(city_info_rec[j]->getWeatherForDay(i));
+            }
+        }
+    }
+    size_t executed_reducers, pos = 0;
+    while(executed_reducers < reducers.size()){
+        pos = executed_reducers + this->max_threads;
+        for(size_t i = executed_reducers; i < pos; i++){
+            this->reducers[i]->start();
+        }
+        for(size_t i = executed_reducers; i < pos; i++){
+            this->reducers[i]->join();
+            executed_reducers++;
+        }
+    }
+}
+
+Server::~Server(){
+    delete[] &this->reducers;
+}
+
