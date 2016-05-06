@@ -1,6 +1,7 @@
 #include "common_socket.h"
 #include "common_system_error.h"
 #include "common_socket_info.h"
+#include <exception>
 
 #ifndef _POSIX_C_SOURCE
 #define _POSIX_C_SOURCE 1
@@ -11,11 +12,11 @@
 #define ERROR -1
 #define OK 0
 
-Socket::Socket(std::string hostname, std::string port, bool set_flags):
+Socket::Socket(std::string *hostname, std::string &port, bool set_flags):
 hostname(hostname),
 port(port),
 set_flags(set_flags){
-    this->sckt_info.generateInfo(this->hostname, this->port, this->set_flags);
+    this->sckt_info.generateInfo(*this->hostname, this->port, this->set_flags);
 
 	int new_fd = socket(this->sckt_info.addr->ai_family,
 						this->sckt_info.addr->ai_socktype,
@@ -32,18 +33,23 @@ int Socket::getFileDescriptor(){
     return this->fd;
 }
 
-void Socket::socket_shutdown(){
-	shutdown(this->fd, SHUT_RDWR);
+void Socket::socket_shutdown(int how_flag){
+	shutdown(this->fd, how_flag);
 }
 
 void Socket::socket_bind(){
-    int success = bind(this->fd,
+	try{
+		int success = bind(this->fd,
 						this->sckt_info.addr->ai_addr,
 						this->sckt_info.addr->ai_addrlen);
-    if (success != OK){
-        std::stringstream file_desc;
-        file_desc << this->fd;
-        std::string error_desc = "Cannot bind socket! File descriptor: " + file_desc.str();
+		if (success != OK){
+			std::stringstream file_desc;
+			file_desc << this->fd;
+			std::string error_desc = "Cannot bind socket! File descriptor: " + file_desc.str();
+			throw SystemError(error_desc, __FILE__, __LINE__);
+		}
+	}catch(std::exception &e){
+		std::string error_desc = "Cannot bind socket!";
 		throw SystemError(error_desc, __FILE__, __LINE__);
 	}
 }
@@ -88,14 +94,17 @@ bool Socket::socket_connect(){
 	while ( (!connection_list_ended) && (success == ERROR) ){
 		this->sckt_info.addr = this->sckt_info.addr->ai_next;
 		connection_list_ended = (this->sckt_info.addr == NULL);
+		try{
+			Socket s(this->hostname, this->port, this->set_flags);
+			this->fd = s.getFileDescriptor();
 
-		Socket s(this->port, this->hostname, this->set_flags);
-        fd = s.getFileDescriptor();
-
-		if ((!connection_list_ended) && (fd != INVALID_DESC)){
-			success = connect(this->fd,
-								this->sckt_info.addr->ai_addr,
-								this->sckt_info.addr->ai_addrlen);
+			if ((!connection_list_ended) && (fd != INVALID_DESC)){
+				success = connect(this->fd,
+									this->sckt_info.addr->ai_addr,
+									this->sckt_info.addr->ai_addrlen);
+			}
+		}catch(SystemError &e){
+			success = ERROR;
 		}
 	}
 

@@ -2,19 +2,41 @@
 #include <string>
 #include <sstream>
 
-Server::Server(std::string port):
+#define END_SIGNAL "q"
+#define MAX_THREADS 4
+#define MAX_DAYS_MONTH 31
+
+Server::Server(std::string &port):
 port(port){
-    this->hostname = "localhost";
-    this->max_threads = 4;
+    this->max_threads = MAX_THREADS;
+}
+
+void Server::addInfoReceiver(Socket *listener){
+	CityInfoReceiver *info_rec = new CityInfoReceiver(*listener);
+	this->cities.push_back(info_rec);
+	info_rec->start();
 }
 
 void Server::run(){
-    ClientAcceptor acceptor(this->hostname, this->port);
-    std::vector<CityInfoReceiver*> city_info_rec;
-    acceptor.acceptClients(city_info_rec);
+	std::string end_accept = END_SIGNAL;
+    ClientAcceptor acceptor(this->port, *this);
+    acceptor.start();
+	
+	std::string input = "";
+	while (input.compare(END_SIGNAL) != 0){
+		std::cin >> input;
+	}
+	
+	acceptor.endClientAccept();
+	acceptor.join();
+	
+	for(size_t i = 0; i < cities.size(); i++){
+        cities[i]->join();
+    }
+///-------------------refactor!------------///
 
-    int max_days = 31;
-    for(int i = 1; i <= max_days; i++){
+/*
+    for(int i = 1; i <= MAX_DAYS_MONTH; i++){
         for(size_t j = 0; j < city_info_rec.size(); j++){
             bool city_has_info_day = city_info_rec[j]->hasWeatherForDay(i);
             bool day_reducer_exists = (reducers.count(i) > 0 );
@@ -37,10 +59,10 @@ void Server::run(){
             this->reducers[i]->join();
             executed_reducers++;
         }
-    }
+    }*/
 }
 
 Server::~Server(){
-    delete[] &this->reducers;
+    //delete[] &this->reducers;
 }
 

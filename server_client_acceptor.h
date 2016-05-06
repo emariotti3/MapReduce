@@ -5,17 +5,20 @@
 #include "common_socket.h"
 #include "server_city_info_receiver.h"
 
-class ClientAcceptor{
+class Server;
+
+class ClientAcceptor: public Thread{
     public:
-        ClientAcceptor(std::string hostname, std::string port);
-        void acceptClients(std::vector<CityInfoReceiver*> &cities);
+        ClientAcceptor(std::string &port, Server &server);
+        void run();
+        void endClientAccept();
         virtual ~ClientAcceptor();
     protected:
     private:
-        std::string hostname;
-        std::string port;
-        std::string end_signal;
-        std::vector<Socket*> created;
+        std::string &port;
+        Socket *acceptor;
+        Server &server;
+        bool accept_mode;
 };
 
 #endif // CONNECTIONACCEPTOR_H

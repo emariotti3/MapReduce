@@ -3,13 +3,13 @@
 #include <queue>
 #include <sstream>
 
-Client::Client(std::string hostname, std::string port):
+Client::Client(std::string &hostname, std::string &port):
 hostname(hostname),
 port(port)
 {}
 
 void Client::run(){
-    Socket client(this->hostname, this->port, false);
+    Socket client(&this->hostname, this->port, false);
     std::string end_pairs = "End\n";
     bool connected = client.socket_connect();
     if(!connected){
@@ -24,7 +24,7 @@ void Client::run(){
         std::string key_value = keys_values.front();
         keys_values.pop();
         char *kv_char = &(key_value)[0u];
-        client.socket_send(kv_char, key_value.size());
+        client.socket_send(kv_char, key_value.size()-1);
     }
 }
 

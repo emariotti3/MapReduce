@@ -16,15 +16,20 @@ void CityInfoReceiver::run(){
     char eof_info = '\n';
     std::string weather_info = "";
     std::queue<std::string> day_weather_info;
-    while(weather_info.compare(weather_info.size() - this->end_signal.size(), std::string::npos, this->end_signal.c_str()) != 0){
+    size_t pos_end_signal = 0;
+    while(weather_info.compare(pos_end_signal, std::string::npos, this->end_signal.c_str()) != 0){
         char received[MAX_SIZE_BYTES];
-        this->listener.socket_receive(received, sizeof(char));
+        //this->listener.socket_receive(received, sizeof(char));
         this->listener.socket_receive(received, MAX_SIZE_BYTES, &eof_info, sizeof(char));
         weather_info += received;
     }
     std::string word = "";
     std::stringstream s(weather_info);
-
+    if(weather_info.size() >= this->end_signal.size()){
+		pos_end_signal = weather_info.size() - this->end_signal.size();
+	}else{
+		pos_end_signal = 0;
+	}
     while(s >> word){
         int temp, day= 0;
         std::string city_name = "";

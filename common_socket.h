@@ -17,20 +17,20 @@
 
 class Socket{
     public:
-        Socket(std::string hostname, std::string port, bool set_flags);
+        Socket(std::string *hostname, std::string &port, bool set_flags);
         void socket_send(char *buffer, size_t size);
         void socket_receive(char *buffer, size_t size);
-	void socket_receive(char *buffer, size_t size, char *delim, size_t size_delim);
+		void socket_receive(char *buffer, size_t size, char *delim, size_t size_delim);
         void socket_accept(Socket &connection_socket);
         bool socket_connect();
         void socket_bind();
         void socket_listen();
-        void socket_shutdown();
+        void socket_shutdown(int how_flag = SHUT_RDWR);
         int getFileDescriptor();
         ~Socket();
     protected:
     private:
-        std::string &hostname;
+        std::string *hostname;
         std::string &port;
         bool set_flags;
         SocketInfo sckt_info;

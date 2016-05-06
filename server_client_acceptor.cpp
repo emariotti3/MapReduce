@@ -1,32 +1,37 @@
 #include "server_client_acceptor.h"
+#include "server_thread.h"
+#include "server.h"
 #include <iostream>
 
-ClientAcceptor::ClientAcceptor(std::string hostname, std::string port):
-hostname(hostname),
-port(port){
-    this->end_signal = "q";
+#define HOSTNAME "localhost"
+
+ClientAcceptor::ClientAcceptor(std::string &port, Server &server):
+port(port),
+server(server){
+	std::string host = HOSTNAME;
+	this->acceptor = new Socket(&host, port, true);
+	this->acceptor->socket_bind();
+    this->acceptor->socket_listen();
+    this->accept_mode = true;
 }
 
-void ClientAcceptor::acceptClients(std::vector<CityInfoReceiver*> &cities){
-    Socket acceptor(this->hostname, this->port, true);
-    std::string input = "";
-    std::cin >> input;
-    while(input.compare(this->end_signal) != 0){
-        Socket *listener = new Socket(this->hostname, this->port, true);
-        acceptor.socket_accept(*listener);
-        CityInfoReceiver *info_rec = new CityInfoReceiver(*listener);
-        info_rec->start();
-        cities.push_back(info_rec);
-        this->created.push_back(listener);
-        std::cin >> input;
+void ClientAcceptor::run(){
+    while(this->accept_mode){
+		std::string host = HOSTNAME;
+        Socket *listener = new Socket(&host, this->port, true);
+        acceptor->socket_accept(*listener);
+        this->server.addInfoReceiver(listener);
+        //this->created.push_back(listener);
     }
-    acceptor.socket_shutdown();
-    for(size_t i = 0; i < cities.size(); i++){
-        cities[i]->join();
-    }
+}
+
+void ClientAcceptor::endClientAccept(){
+	this->acceptor->socket_shutdown();
+	this->accept_mode = false;
 }
 
 ClientAcceptor::~ClientAcceptor(){
-    delete[] &this->created;
+	delete this->acceptor;
+    //delete[] &this->created;
 }
 

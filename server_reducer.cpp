@@ -7,9 +7,9 @@ id(id){
 
 void Reducer::run(){
 }
-
+/*
 void Reducer::add(CityWeather *cityWeather){
-}
+}*/
 
 Reducer::~Reducer(){
     //dtor
