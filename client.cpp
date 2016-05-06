@@ -24,7 +24,7 @@ void Client::run(){
         std::string key_value = keys_values.front();
         keys_values.pop();
         char *kv_char = &(key_value)[0u];
-        client.socket_send(kv_char, key_value.size()-1);
+        client.socket_send(kv_char, key_value.size());
     }
 }
 

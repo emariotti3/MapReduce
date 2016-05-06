@@ -120,7 +120,7 @@ void Socket::socket_send(char *buffer, size_t size){
 
 		if (sent < 0){
 			std::string error_desc = "socket_send() operation invalid!";
-			error_desc += (this->fd == INVALID_DESC)? "Invalid file descriptor!" : "";
+			error_desc += "File descriptor:" + this->fd;
             throw SystemError(error_desc, __FILE__, __LINE__);
 		}
 
@@ -137,7 +137,7 @@ void Socket::socket_receive(char *buffer, size_t size){
 		read = recv(this->fd, pos, size - total_received, MSG_NOSIGNAL);
 		if (read < 0){
 			std::string error_desc = "socket_receive() operation invalid!";
-			error_desc += (this->fd == INVALID_DESC)? "Invalid file descriptor!" : "";
+			error_desc += "File descriptor:" + this->fd;
             throw SystemError(error_desc, __FILE__, __LINE__);
 		}
 		total_received += read;
@@ -151,10 +151,30 @@ void Socket::socket_receive(char *buffer, size_t size, char *delim, size_t size_
 	bool continue_recv = ((size - total_received) != 0);
 	while (continue_recv){
 		pos = buffer + total_received;
+		read = recv(this->fd, pos, size - total_received, MSG_DONTWAIT);
+		if (read > 0){
+			total_received += read;
+			continue_recv = ((size - total_received) != 0);
+			if(pos != NULL){
+				continue_recv = continue_recv || (strncmp(delim, pos - size_delim, size_delim) != 0);
+			}
+		}
+
+	}
+}
+
+
+/*void Socket::socket_receive(char *buffer, size_t size, char *delim, size_t size_delim){
+	size_t read = 0;
+	size_t total_received = 0;
+	char *pos = NULL;
+	bool continue_recv = ((size - total_received) != 0);
+	while (continue_recv){
+		pos = buffer + total_received;
 		read = recv(this->fd, pos, size - total_received, MSG_NOSIGNAL);
 		if (read < 0){
 			std::string error_desc = "socket_receive() operation invalid!";
-			error_desc += (this->fd == INVALID_DESC)? "Invalid file descriptor!" : "";
+			error_desc += "File descriptor:" + this->fd;
             throw SystemError(error_desc, __FILE__, __LINE__);
 		}
 		total_received += read;
@@ -163,7 +183,7 @@ void Socket::socket_receive(char *buffer, size_t size, char *delim, size_t size_
 			continue_recv = continue_recv || (strncmp(delim, pos - size_delim, size_delim) != 0);
 		}
 	}
-}
+}*/
 
 Socket::~Socket(){
 	close(this->fd);
