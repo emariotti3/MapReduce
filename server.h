@@ -11,7 +11,7 @@
 #include "server_mutex.h"
 #include "server_lock.h"
 
-typedef std::map<int, std::vector<CityWeather*> > WeatherMap;
+typedef std::map<int, std::vector<CityWeather*> *> WeatherMap;
 typedef std::vector<CityInfoReceiver*> CityInfoReceiverList;
 
 class CityInfoReceiver;

@@ -7,7 +7,7 @@
 #define END_SIGNAL "q"
 #define MAX_THREADS 4
 
-typedef std::map<int, std::vector<CityWeather*> > WeatherMap;
+typedef std::map<int, std::vector<CityWeather*> *> WeatherMap;
 typedef std::vector<CityWeather*> CityWeatherList;
 
 Server::Server(std::string &port):
@@ -26,11 +26,11 @@ void Server::addInfoWeather(std::string &info_weather){
 	CityWeather *city_weather = this->city_wf.newCityWeather(info_weather);
 	int key = city_weather->getDay();
 	if(this->daily_weather_info.count(key) > 0){
-		this->daily_weather_info[key].push_back(city_weather);
+		this->daily_weather_info[key]->push_back(city_weather);
 	}else{
 		CityWeatherList values;
-		values.push_back(city_weather);
-		this->daily_weather_info.insert(WeatherMap::value_type(key, values));
+		this->daily_weather_info.insert(WeatherMap::value_type(key, &values));
+		this->daily_weather_info[key]->push_back(city_weather);
 	}
 }
 

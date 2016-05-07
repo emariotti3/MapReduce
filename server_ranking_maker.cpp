@@ -3,23 +3,25 @@
 #include <vector>
 #include <iostream>
 
-typedef std::map<int, std::vector<CityWeather*> > WeatherMap;
-typedef std::map<int, std::vector<CityWeather*> >::iterator WeatherMapIt;
+typedef std::vector<Reducer*>::iterator ReducerListIt;
+typedef std::vector<CityWeather*> CityWeatherList;
+typedef std::map<int, std::vector<CityWeather*> *> WeatherMap;
+typedef std::map<int, std::vector<CityWeather*> *>::iterator WeatherMapIt;
 
 void RankingMaker::printOrderByTempertaure(WeatherMap &weather_info){	
 	std::vector<Reducer*> reducers;
 	WeatherMapIt it_begin = weather_info.begin();
 	WeatherMapIt it_end = weather_info.end();
-	for (WeatherMapIt it = it_begin; it != it_end; it++){
-		Reducer *reducer = new Reducer(it->second);
-		reducers.push_back(reducer);
+	for (; it_begin != it_end; it_begin++){
+		Reducer reducer(*it_begin->second);
+		reducers.push_back(&reducer);
+		reducer.start();
 	}
-	for (size_t i = 0; i < reducers.size(); i++){
-		reducers[i]->start();
-	}
-	for (size_t i = 0; i < reducers.size(); i++){
-		reducers[i]->join();
-		std::cout << reducers[i]->getResult().str() << '\n';
+	ReducerListIt it_begin_red = reducers.begin();
+	ReducerListIt it_end_red = reducers.end();
+	for (; it_begin_red != it_end_red; it_begin_red++){
+		(*it_begin_red)->join();
+		std::cout << it_begin_red->getResult().str() << '\n';
 	}
 	//delete[] &reducers;
 }
