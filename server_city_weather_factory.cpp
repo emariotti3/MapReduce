@@ -15,5 +15,7 @@ CityWeather* CityWeatherFactory::newCityWeather(std::string &pair_key_value){
     return city_weather;
 }
 
-CityWeatherFactory::~CityWeatherFactory(){}
+CityWeatherFactory::~CityWeatherFactory(){
+	//delete[] &this->created;
+}
 

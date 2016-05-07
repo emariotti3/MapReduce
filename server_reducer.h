@@ -1,16 +1,24 @@
 #ifndef REDUCER_H
 #define REDUCER_H
 
+#include "server_reducer.h"
 #include "server_thread.h"
+#include "server_city_weather.h"
+#include <vector>
+#include <sstream>
+
+typedef std::vector<CityWeather*> CityWeatherList;
 
 class Reducer: public Thread{
     public:
-        Reducer(int &id);
+        Reducer(CityWeatherList &cities);
+        std::stringstream& getResult();
         void run();
         virtual ~Reducer();
     protected:
     private:
-        int &id;
+		CityWeatherList &cities;
+		std::stringstream result;
 };
 
 #endif // REDUCER_H

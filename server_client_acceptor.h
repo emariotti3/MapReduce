@@ -19,6 +19,7 @@ class ClientAcceptor: public Thread{
         Socket *acceptor;
         Server &server;
         bool accept_mode;
+        std::vector<Socket*> created;
 };
 
 #endif // CONNECTIONACCEPTOR_H

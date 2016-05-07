@@ -23,7 +23,7 @@ void ClientAcceptor::run(){
         if (this->accept_mode){
 			this->server.addInfoReceiver(listener);
 		}
-        //this->created.push_back(listener);
+        this->created.push_back(listener);
     }
 }
 
@@ -33,7 +33,10 @@ void ClientAcceptor::endClientAccept(){
 }
 
 ClientAcceptor::~ClientAcceptor(){
-	delete this->acceptor;
-    //delete[] &this->created;
+	/*delete this->acceptor;
+	for (size_t i = 0; i < this->created.size(); i++){
+		this->created[i]->socket_shutdown();
+		delete &this->created[i];
+	}*/
 }
 

@@ -11,6 +11,9 @@
 #include "server_mutex.h"
 #include "server_lock.h"
 
+typedef std::map<int, std::vector<CityWeather*> > WeatherMap;
+typedef std::vector<CityInfoReceiver*> CityInfoReceiverList;
+
 class CityInfoReceiver;
 
 class Server{
@@ -26,8 +29,8 @@ class Server{
         std::string &port;
         int max_threads;
         CityWeatherFactory city_wf;
-        std::vector<CityInfoReceiver*> cities;
-        std::map<int, std::vector<CityWeather*> > daily_weather_info;
+        CityInfoReceiverList cities;
+        WeatherMap daily_weather_info;
 };
 
 #endif // SERVER_H
