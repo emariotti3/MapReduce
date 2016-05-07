@@ -12,7 +12,6 @@ port(port){
 }
 
 void Server::addInfoReceiver(Socket *listener){
-	Lock l(this->mutex);
 	CityInfoReceiver *info_rec = new CityInfoReceiver(*listener, *this);
 	this->cities.push_back(info_rec);
 	info_rec->start();

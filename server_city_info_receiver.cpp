@@ -45,6 +45,7 @@ void CityInfoReceiver::run(){
     for(size_t i = 0; i < day_weather_info.size(); i++){			
 		this->server.addInfoWeather(day_weather_info[i]);
 	}
+	return;
 }
 
 CityInfoReceiver::~CityInfoReceiver(){}

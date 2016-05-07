@@ -71,16 +71,11 @@ void Socket::socket_listen(){
 }
 
 void Socket::socket_accept(Socket &connection_socket){
-	bool continue_running = true;
 	int new_fd;
+	new_fd = accept(this->fd, NULL, NULL);
 
-	while (continue_running){
-		new_fd = accept(this->fd, NULL, NULL);
-
-		if (new_fd != INVALID_DESC){
-            connection_socket.setFileDescriptor(new_fd);
-			continue_running = false;
-		}
+	if (new_fd != INVALID_DESC){
+        connection_socket.setFileDescriptor(new_fd);
 	}
 }
 
