@@ -3,6 +3,10 @@
 #ifndef SERVER_MAIN_H
 #define SERVER_MAIN_H
 
+#define SERVER_MODE "server"
+#define SERVER_MODE_POS 0
+#define SERVER_PORT_POS 1
+
 int main(int argc, char *argv[]){
 	try{
 		std::string mode(argv[SERVER_MODE_POS]);

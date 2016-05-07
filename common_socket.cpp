@@ -11,6 +11,7 @@
 #define INVALID_DESC -1
 #define ERROR -1
 #define OK 0
+#define SIZE_RECEIVE 1
 
 Socket::Socket(std::string *hostname, std::string &port, bool set_flags):
 hostname(hostname),
@@ -148,42 +149,27 @@ void Socket::socket_receive(char *buffer, size_t size, char *delim, size_t size_
 	size_t read = 0;
 	size_t total_received = 0;
 	char *pos = NULL;
-	bool continue_recv = ((size - total_received) != 0);
+	bool continue_recv = (total_received < size);
 	while (continue_recv){
 		pos = buffer + total_received;
-		read = recv(this->fd, pos, size - total_received, MSG_DONTWAIT);
-		if (read > 0){
-			total_received += read;
-			continue_recv = ((size - total_received) != 0);
-			if(pos != NULL){
-				continue_recv = continue_recv || (strncmp(delim, pos - size_delim, size_delim) != 0);
+		try{
+			read = recv(this->fd, pos, SIZE_RECEIVE, MSG_NOSIGNAL);
+			if (read < 0){
+				std::string error_desc = "socket_receive() operation invalid!";
+				error_desc += "File descriptor:" + this->fd;
+				error_desc += strerror(errno);
+				throw SystemError(error_desc, __FILE__, __LINE__);
 			}
-		}
-
-	}
-}
-
-
-/*void Socket::socket_receive(char *buffer, size_t size, char *delim, size_t size_delim){
-	size_t read = 0;
-	size_t total_received = 0;
-	char *pos = NULL;
-	bool continue_recv = ((size - total_received) != 0);
-	while (continue_recv){
-		pos = buffer + total_received;
-		read = recv(this->fd, pos, size - total_received, MSG_NOSIGNAL);
-		if (read < 0){
+			total_received += read;
+			continue_recv = (strncmp(delim, pos - size_delim, size_delim) != 0) && (total_received < size);
+		}catch(std::exception &e){
 			std::string error_desc = "socket_receive() operation invalid!";
 			error_desc += "File descriptor:" + this->fd;
-            throw SystemError(error_desc, __FILE__, __LINE__);
-		}
-		total_received += read;
-		continue_recv = ((size - total_received) != 0);
-		if(pos != NULL){
-			continue_recv = continue_recv || (strncmp(delim, pos - size_delim, size_delim) != 0);
+			error_desc += strerror(errno);
+			throw SystemError(error_desc, __FILE__, __LINE__);
 		}
 	}
-}*/
+}
 
 Socket::~Socket(){
 	close(this->fd);

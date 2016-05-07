@@ -6,7 +6,6 @@
 class Reducer: public Thread{
     public:
         Reducer(int &id);
-        //void add(CityWeather *cityWeather);
         void run();
         virtual ~Reducer();
     protected:

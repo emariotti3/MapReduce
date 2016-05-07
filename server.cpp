@@ -1,10 +1,10 @@
 #include "server.h"
+#include "server_city_info_receiver.h"
 #include <string>
 #include <sstream>
 
 #define END_SIGNAL "q"
 #define MAX_THREADS 4
-#define MAX_DAYS_MONTH 31
 
 Server::Server(std::string &port):
 port(port){
@@ -12,10 +12,25 @@ port(port){
 }
 
 void Server::addInfoReceiver(Socket *listener){
-	CityInfoReceiver *info_rec = new CityInfoReceiver(*listener);
+	Lock l(this->mutex);
+	CityInfoReceiver *info_rec = new CityInfoReceiver(*listener, *this);
 	this->cities.push_back(info_rec);
 	info_rec->start();
 }
+
+void Server::addInfoWeather(std::string &info_weather){
+	Lock l(this->mutex);
+	CityWeather *city_weather = this->city_wf.newCityWeather(info_weather);
+	int key = city_weather->getDay();
+	if(this->daily_weather_info.count(key) > 0){
+		this->daily_weather_info[key].push_back(city_weather);
+	}else{
+		std::vector<CityWeather*> values;
+		values.push_back(city_weather);
+		this->daily_weather_info.insert(std::map<int, std::vector<CityWeather*> >::value_type(key, values));
+	}
+}
+
 
 void Server::run(){
 	std::string end_accept = END_SIGNAL;

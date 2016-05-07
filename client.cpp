@@ -9,17 +9,20 @@ port(port)
 {}
 
 void Client::run(){
-    Socket client(&this->hostname, this->port, false);
-    std::string end_pairs = "End\n";
-    bool connected = client.socket_connect();
-    if(!connected){
-        std::string error = "Connection to server was unsuccessful!";
-        throw new SystemError(error, __FILE__, __LINE__);
-    }
+    std::string end_pairs = "End\n"; 
     std::queue<std::string> keys_values;
     this->mapper.remap(std::cin, keys_values);
     keys_values.push(end_pairs);
-
+	
+    Socket client(&this->hostname, this->port, false);
+	
+	bool connected = client.socket_connect();
+	
+	if(!connected){
+        std::string error = "Connection to server was unsuccessful!";
+        throw new SystemError(error, __FILE__, __LINE__);
+    }
+    
     while(!keys_values.empty()){
         std::string key_value = keys_values.front();
         keys_values.pop();

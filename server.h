@@ -3,28 +3,31 @@
 
 #include <stdio.h>
 #include <iostream>
-
+#include <vector>
 #include "server_reducer.h"
-#include "server_city_info_receiver.h"
+#include "server_city_weather_factory.h"
 #include "server_client_acceptor.h"
 #include "common_system_error.h"
+#include "server_mutex.h"
+#include "server_lock.h"
 
-#define SERVER_MODE "server"
-#define SERVER_MODE_POS 0
-#define SERVER_PORT_POS 1
+class CityInfoReceiver;
 
 class Server{
     public:
         Server(std::string &port);
         void addInfoReceiver(Socket *listener);
+        void addInfoWeather(std::string &info_weather);
         void run();
         virtual ~Server();
     protected:
     private:
+		Mutex mutex;
         std::string &port;
         int max_threads;
-        //std::map<int, Reducer*> reducers;
+        CityWeatherFactory city_wf;
         std::vector<CityInfoReceiver*> cities;
+        std::map<int, std::vector<CityWeather*> > daily_weather_info;
 };
 
 #endif // SERVER_H

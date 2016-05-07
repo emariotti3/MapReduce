@@ -5,10 +5,12 @@
 
 class CityWeather{
     public:
-        CityWeather(std::string &city, int &temp);
+        CityWeather(int &day, std::string &city, int &temp);
+        int& getDay();
         virtual ~CityWeather();
     protected:
     private:
+		int &day;
         std::string &city_name;
         int &temperature;
 };

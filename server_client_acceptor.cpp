@@ -20,7 +20,9 @@ void ClientAcceptor::run(){
 		std::string host = HOSTNAME;
         Socket *listener = new Socket(&host, this->port, true);
         acceptor->socket_accept(*listener);
-        this->server.addInfoReceiver(listener);
+        if(this->accept_mode){
+			this->server.addInfoReceiver(listener);
+		}
         //this->created.push_back(listener);
     }
 }
