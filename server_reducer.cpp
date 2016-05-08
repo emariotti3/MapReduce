@@ -15,7 +15,7 @@ void Reducer::add(CityWeather *cw){
 
 bool cmp(const CityWeather* cw_1, const CityWeather* cw_2){
 	if (cw_1->getTemperature() == cw_2->getTemperature()){
-		return cw_1->getCityName().compare(cw_2->getCityName());
+		return cw_1->getCityName() < cw_2->getCityName();
 	}
 	return (cw_1->getTemperature() < cw_2->getTemperature());
 }
@@ -36,11 +36,11 @@ void Reducer::run(){
 	CityWeather *hottest_city = *it_begin;
 	std::string names = "";
 	while ((it_begin != it_end) && ((*hottest_city) == *(*it_begin)) ){
-		names = names + "/" + (*it_begin)->getCityName();
+		names = (*it_begin)->getCityName() + "/" + names;
 		it_begin++;
 	}
 	this->result << hottest_city->getDay();
-	this->result << ": " << names.substr(1, names.size());
+	this->result << ": " << names.substr(0, names.size()-1);
 	this->result << " (" << hottest_city->getTemperature();
 	this->result << ")";
 }
