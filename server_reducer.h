@@ -11,9 +11,9 @@ typedef std::vector<CityWeather*> CityWeatherList;
 
 class Reducer: public Thread{
     public:
-        //Reducer(CityWeatherList &cities);
         std::stringstream& getResult();
         void add(CityWeather *cw);
+        void sort_cities();
         void run();
         virtual ~Reducer();
     protected:
@@ -21,5 +21,7 @@ class Reducer: public Thread{
 		CityWeatherList cities;
 		std::stringstream result;
 };
+
+
 
 #endif // REDUCER_H

@@ -5,15 +5,12 @@
 #include <sstream>
 
 #define END_SIGNAL "q"
-#define MAX_THREADS 4
 
 typedef std::multimap<int, CityWeather*> WeatherMap;
 typedef std::vector<CityWeather*> CityWeatherList;
 
 Server::Server(std::string &port):
-port(port){
-    this->max_threads = MAX_THREADS;
-}
+port(port){}
 
 void Server::addInfoReceiver(Socket *listener){
 	CityInfoReceiver *info_rec = new CityInfoReceiver(*listener, *this);

@@ -4,6 +4,8 @@
 #include <iostream>
 #include <map>
 
+#define MAX_THREADS 4
+
 typedef std::multimap<int, CityWeather*> WeatherMap;
 typedef std::multimap<int, CityWeather*>::iterator WeatherMapIt;
 typedef std::map<int, Reducer*> ReducerMap;

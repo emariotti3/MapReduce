@@ -28,7 +28,6 @@ class Server{
     private:
 		Mutex mutex;
         std::string &port;
-        int max_threads;
         CityWeatherFactory city_wf;
         CityInfoReceiverList cities;
         WeatherMap daily_weather_info;
