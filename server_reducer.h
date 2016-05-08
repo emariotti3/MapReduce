@@ -11,13 +11,14 @@ typedef std::vector<CityWeather*> CityWeatherList;
 
 class Reducer: public Thread{
     public:
-        Reducer(CityWeatherList &cities);
+        //Reducer(CityWeatherList &cities);
         std::stringstream& getResult();
+        void add(CityWeather *cw);
         void run();
         virtual ~Reducer();
     protected:
     private:
-		CityWeatherList &cities;
+		CityWeatherList cities;
 		std::stringstream result;
 };
 

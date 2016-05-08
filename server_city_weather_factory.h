@@ -7,7 +7,7 @@
 
 class CityWeatherFactory{
     public:
-        CityWeather *newCityWeather(std::string &pair_key_value);
+        CityWeather *newCityWeather(std::string pair_key_value);
         ~CityWeatherFactory();
     private:
 		std::vector<CityWeather*> created;

@@ -5,11 +5,12 @@
 typedef std::vector<CityWeather*> CityWeatherList;
 typedef std::vector<CityWeather*>::reverse_iterator CityWeatherListIt;
 
-Reducer::Reducer(CityWeatherList &cities):
-cities(cities){}
-
 std::stringstream& Reducer::getResult(){
 	return this->result;
+}
+
+void Reducer::add(CityWeather *cw){
+	this->cities.push_back(cw);
 }
 
 void Reducer::run(){
@@ -19,13 +20,14 @@ void Reducer::run(){
 	CityWeatherListIt it_end = this->cities.rend();
 	CityWeather *hottest_city = *it_begin;
 	std::string names = "";
-	while (((*hottest_city) == (*it_begin)) && (it_begin != it_end)){
-		names = hottest_city->getCityName() + "/";
+	while ((it_begin != it_end) && ((*hottest_city) == (*it_begin))){
+		names += (*it_begin)->getCityName() + "/";
 		it_begin++;
 	}
 	this->result << hottest_city->getDay();
-	this->result << ':' << names.substr(0, names.size()-1);
-	this->result << hottest_city->getTemperature();
+	this->result << ": " << names.substr(0, names.size()-1);
+	this->result << " (" << hottest_city->getTemperature();
+	this->result << ")";
 }
 
 Reducer::~Reducer(){}

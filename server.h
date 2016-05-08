@@ -2,8 +2,9 @@
 #define SERVER_H
 
 #include <stdio.h>
-#include <iostream>
 #include <vector>
+#include <iostream>
+#include <map>
 #include "server_reducer.h"
 #include "server_city_weather_factory.h"
 #include "server_client_acceptor.h"
@@ -11,7 +12,7 @@
 #include "server_mutex.h"
 #include "server_lock.h"
 
-typedef std::map<int, std::vector<CityWeather*> *> WeatherMap;
+typedef std::multimap<int, CityWeather*> WeatherMap;
 typedef std::vector<CityInfoReceiver*> CityInfoReceiverList;
 
 class CityInfoReceiver;

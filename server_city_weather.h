@@ -5,7 +5,7 @@
 
 class CityWeather{
     public:
-        CityWeather(int &day, std::string &city, int &temp);
+        CityWeather(int day, std::string city, int temp);
         bool operator<(CityWeather *cw_2);
         bool operator==(CityWeather *cw_2);
         int& getTemperature();
@@ -14,9 +14,9 @@ class CityWeather{
         virtual ~CityWeather();
     protected:
     private:
-		int &day;
-        std::string &city_name;
-        int &temperature;
+		int day;
+        std::string city_name;
+        int temperature;
 };
 
 #endif // CITYWEATHER_H

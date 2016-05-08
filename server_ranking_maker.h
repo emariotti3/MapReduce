@@ -7,7 +7,7 @@
 
 class RankingMaker{
 	public:
-		void printOrderByTempertaure(std::map<int, std::vector<CityWeather*>* > &weather_info);
+		void printOrderByTempertaure(std::multimap<int, CityWeather*> &weather_info);
 		~RankingMaker();
 	private:
 };

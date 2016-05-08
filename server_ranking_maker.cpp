@@ -2,27 +2,39 @@
 #include "server_reducer.h"
 #include <vector>
 #include <iostream>
+#include <map>
 
-typedef std::vector<Reducer*>::iterator ReducerListIt;
-typedef std::vector<CityWeather*> CityWeatherList;
-typedef std::map<int, std::vector<CityWeather*> *> WeatherMap;
-typedef std::map<int, std::vector<CityWeather*> *>::iterator WeatherMapIt;
+typedef std::multimap<int, CityWeather*> WeatherMap;
+typedef std::multimap<int, CityWeather*>::iterator WeatherMapIt;
+typedef std::map<int, Reducer*> ReducerMap;
+typedef std::map<int, Reducer*>::iterator ReducerMapIt;
 
-void RankingMaker::printOrderByTempertaure(WeatherMap &weather_info){	
-	std::vector<Reducer*> reducers;
-	WeatherMapIt it_begin = weather_info.begin();
+void RankingMaker::printOrderByTempertaure(WeatherMap &weather_info){
+	ReducerMap reducers;
+	WeatherMapIt it = weather_info.begin();
 	WeatherMapIt it_end = weather_info.end();
-	for (; it_begin != it_end; it_begin++){
-		Reducer reducer(*it_begin->second);
-		reducers.push_back(&reducer);
-		reducer.start();
+	for (; it != it_end; it++){
+		Reducer *reducer;
+		if (reducers.find(it->first)!= reducers.end()){
+			reducer = reducers.find(it->first)->second;
+		}
+		else{
+			reducer = new Reducer();
+			reducers.insert(ReducerMap::value_type(it->first, reducer));
+		}
+		reducer->add(it->second);
 	}
-	ReducerListIt it_begin_red = reducers.begin();
-	ReducerListIt it_end_red = reducers.end();
-	for (; it_begin_red != it_end_red; it_begin_red++){
-		(*it_begin_red)->join();
-		std::cout << it_begin_red->getResult().str() << '\n';
-	}
+	ReducerMapIt it_begin_red = reducers.begin();
+	ReducerMapIt it_end_red = reducers.end();
+	for (; it_begin_red != it_end_red; ++it_begin_red){
+		it_begin_red->second->start();
+	}	
+	it_begin_red = reducers.begin();
+	for (; it_begin_red != it_end_red; ++it_begin_red){
+		it_begin_red->second->join();
+		std::cout << it_begin_red->second->getResult().str() << '\n';
+	}	
+
 	//delete[] &reducers;
 }
 
