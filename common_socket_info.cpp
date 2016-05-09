@@ -15,5 +15,5 @@ void SocketInfo::generateInfo(std::string &hostname, std::string &port, bool set
 }
 
 SocketInfo::~SocketInfo(){
-    //delete (&this->hints);
+    freeaddrinfo(this->addr);
 }

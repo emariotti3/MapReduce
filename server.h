@@ -27,10 +27,10 @@ class Server{
     protected:
     private:
 		Mutex mutex;
-        std::string &port;
-        CityWeatherFactory city_wf;
         CityInfoReceiverList cities;
         WeatherMap daily_weather_info;
+        CityWeatherFactory *city_wf;
+        ClientAcceptor *acceptor;
 };
 
 #endif // SERVER_H

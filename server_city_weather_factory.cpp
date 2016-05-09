@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <sstream>
 
-CityWeather* CityWeatherFactory::newCityWeather(std::string pair_key_value){
+CityWeather* CityWeatherFactory::newCityWeather(std::string &pair_key_value){
 	std::stringstream s(pair_key_value);
 	int temp, day = 0;
     std::string city_name = "";
@@ -16,6 +16,8 @@ CityWeather* CityWeatherFactory::newCityWeather(std::string pair_key_value){
 }
 
 CityWeatherFactory::~CityWeatherFactory(){
-	//delete[] &this->created;
+	for (size_t i = 0; i < this->created.size(); i++){
+		delete this->created[i];
+	}
 }
 

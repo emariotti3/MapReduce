@@ -5,12 +5,14 @@
 #include <vector>
 #include <string>
 
+typedef std::vector<CityWeather*> CityWeatherList;
+
 class CityWeatherFactory{
     public:
-        CityWeather *newCityWeather(std::string pair_key_value);
+        CityWeather *newCityWeather(std::string &pair_key_value);
         ~CityWeatherFactory();
     private:
-		std::vector<CityWeather*> created;
+		CityWeatherList created;
 };
 
 #endif // CITYWEATHERFACTORY_H
