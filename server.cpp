@@ -15,7 +15,6 @@ typedef std::map<int, Reducer*> ReducerMap;
 typedef std::map<int, Reducer*>::iterator ReducerMapIt;
 
 Server::Server(char port[]){
-	this->city_wf = new CityWeatherFactory();
 	this->acceptor = new ClientAcceptor(port, *this);
 }
 
@@ -27,7 +26,7 @@ void Server::addInfoReceiver(Socket *listener){
 
 void Server::addInfoWeather(std::string &info_weather){
 	Lock l(this->mutex);
-	CityWeather *city_weather = this->city_wf->newCityWeather(info_weather);
+	CityWeather *city_weather = this->city_wf.newCityWeather(info_weather);
 	int key = city_weather->getDay();
 	this->daily_weather_info.insert(WeatherMap::value_type(key, city_weather));
 }
@@ -56,7 +55,6 @@ Server::~Server(){
 	for (size_t i = 0; i < this->cities.size(); i++){
 		delete this->cities[i];
 	}
-	delete this->city_wf;
 	delete this->acceptor;
 }
 

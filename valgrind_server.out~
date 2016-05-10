@@ -1,0 +1,45 @@
+==00:00:00:00.000 8858== Memcheck, a memory error detector
+==00:00:00:00.000 8858== Copyright (C) 2002-2013, and GNU GPL'd, by Julian Seward et al.
+==00:00:00:00.000 8858== Using Valgrind-3.10.0.SVN and LibVEX; rerun with -h for copyright info
+==00:00:00:00.000 8858== Command: ./server 11001
+==00:00:00:00.000 8858== Parent PID: 6353
+==00:00:00:00.000 8858== 
+==00:00:00:38.763 8858== 
+==00:00:00:38.763 8858== FILE DESCRIPTORS: 6 open at exit.
+==00:00:00:38.763 8858== Open AF_INET socket 7: <unbound> <-> unbound
+==00:00:00:38.763 8858==    at 0x566A6B7: socket (syscall-template.S:81)
+==00:00:00:38.763 8858==    by 0x407455: Socket::Socket(char*, char*, bool) (common_socket.cpp:31)
+==00:00:00:38.763 8858==    by 0x4038E0: ClientAcceptor::run() (server_client_acceptor.cpp:18)
+==00:00:00:38.763 8858==    by 0x406DE8: Thread::runner(void*) (server_thread.cpp:7)
+==00:00:00:38.763 8858==    by 0x4E3F181: start_thread (pthread_create.c:312)
+==00:00:00:38.763 8858==    by 0x566947C: clone (clone.S:111)
+==00:00:00:38.763 8858== 
+==00:00:00:38.763 8858== Open AF_INET socket 5: <unbound> <-> unbound
+==00:00:00:38.763 8858==    at 0x566A6B7: socket (syscall-template.S:81)
+==00:00:00:38.763 8858==    by 0x407455: Socket::Socket(char*, char*, bool) (common_socket.cpp:31)
+==00:00:00:38.763 8858==    by 0x4038E0: ClientAcceptor::run() (server_client_acceptor.cpp:18)
+==00:00:00:38.763 8858==    by 0x406DE8: Thread::runner(void*) (server_thread.cpp:7)
+==00:00:00:38.763 8858==    by 0x4E3F181: start_thread (pthread_create.c:312)
+==00:00:00:38.763 8858==    by 0x566947C: clone (clone.S:111)
+==00:00:00:38.763 8858== 
+==00:00:00:38.763 8858== Open file descriptor 3: /home/eugenia/Documents/TALLER/TP3/tp/valgrind_server.out
+==00:00:00:38.763 8858==    <inherited from parent>
+==00:00:00:38.763 8858== 
+==00:00:00:38.763 8858== Open file descriptor 2: /dev/pts/1
+==00:00:00:38.763 8858==    <inherited from parent>
+==00:00:00:38.763 8858== 
+==00:00:00:38.763 8858== Open file descriptor 1: /dev/pts/1
+==00:00:00:38.763 8858==    <inherited from parent>
+==00:00:00:38.763 8858== 
+==00:00:00:38.763 8858== Open file descriptor 0: /dev/pts/1
+==00:00:00:38.763 8858==    <inherited from parent>
+==00:00:00:38.763 8858== 
+==00:00:00:38.763 8858== 
+==00:00:00:38.763 8858== HEAP SUMMARY:
+==00:00:00:38.763 8858==     in use at exit: 0 bytes in 0 blocks
+==00:00:00:38.763 8858==   total heap usage: 619 allocs, 619 frees, 56,260 bytes allocated
+==00:00:00:38.763 8858== 
+==00:00:00:38.763 8858== All heap blocks were freed -- no leaks are possible
+==00:00:00:38.763 8858== 
+==00:00:00:38.764 8858== For counts of detected and suppressed errors, rerun with: -v
+==00:00:00:38.764 8858== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

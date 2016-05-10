@@ -30,8 +30,8 @@ class Server{
 		Mutex mutex;
         CityInfoReceiverList cities;
         WeatherMap daily_weather_info;
-        CityWeatherFactory *city_wf;
         ClientAcceptor *acceptor;
+        CityWeatherFactory city_wf;
 };
 
 #endif // SERVER_H

@@ -32,6 +32,7 @@ void ClientAcceptor::endClientAccept(){
 ClientAcceptor::~ClientAcceptor(){
 	delete this->acceptor;
 	for (size_t i = 0; i < this->created.size(); i++){
+		this->created[i]->socket_shutdown();
 		delete this->created[i];
 	}
 }
