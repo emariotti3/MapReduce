@@ -5,6 +5,7 @@
 #include <vector>
 #include <iostream>
 #include <map>
+#include <string>
 #include "server_reducer.h"
 #include "server_city_weather_factory.h"
 #include "server_client_acceptor.h"
@@ -19,7 +20,7 @@ class CityInfoReceiver;
 
 class Server{
     public:
-        Server(std::string &port);
+        explicit Server(char port[]);
         void addInfoReceiver(Socket *listener);
         void addInfoWeather(std::string &info_weather);
         void run();

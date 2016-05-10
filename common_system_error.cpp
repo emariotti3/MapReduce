@@ -1,10 +1,11 @@
 #include "common_system_error.h"
 #include <sstream>
 #include <stdexcept>
+#include <string>
 
-SystemError::SystemError(std::string &message, const std::string &file, int line){
+SystemError::SystemError(std::string &e_msg, const std::string &file, int line){
     std::stringstream msg;
-    msg << "Error: " << message << " in file: " << file << " - line: " << line;
+    msg << "Error: " << e_msg << " in file: " << file << " - line: " << line;
     msg << "\n";
     this->error_msg = msg.str();
 }

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <map>
 
-#define MAX_THREADS 4
+#define MAX_THREADS 5
 
 typedef std::multimap<int, CityWeather*> WeatherMap;
 typedef std::multimap<int, CityWeather*>::iterator WeatherMapIt;

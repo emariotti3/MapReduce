@@ -3,6 +3,8 @@
 #include "server_ranking_maker.h"
 #include <string>
 #include <sstream>
+#include <map>
+#include <vector>
 
 #define END_SIGNAL "q"
 
@@ -12,7 +14,7 @@ typedef std::vector<CityWeather*> CityWeatherList;
 typedef std::map<int, Reducer*> ReducerMap;
 typedef std::map<int, Reducer*>::iterator ReducerMapIt;
 
-Server::Server(std::string &port){
+Server::Server(char port[]){
 	this->city_wf = new CityWeatherFactory();
 	this->acceptor = new ClientAcceptor(port, *this);
 }

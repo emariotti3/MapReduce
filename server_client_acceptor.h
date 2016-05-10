@@ -4,18 +4,19 @@
 #include <vector>
 #include "common_socket.h"
 #include "server_city_info_receiver.h"
+#include <string>
 
 class Server;
 
 class ClientAcceptor: public Thread{
     public:
-        ClientAcceptor(std::string &port, Server &server);
+        ClientAcceptor(char port[], Server &server);
         void run();
         void endClientAccept();
         virtual ~ClientAcceptor();
     protected:
     private:
-        std::string &port;
+        char *port;
         Socket *acceptor;
         Server &server;
         bool accept_mode;

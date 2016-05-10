@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <string>
+
+typedef std::string str;
 
 SocketInfo::SocketInfo(){
     memset(&this->hints, 0, sizeof(struct addrinfo));
@@ -9,9 +12,9 @@ SocketInfo::SocketInfo(){
     this->hints.ai_socktype = SOCK_STREAM;
 }
 
-void SocketInfo::generateInfo(std::string &hostname, std::string &port, bool set_flags){
+void SocketInfo::generateInfo(char hostname[], char port[], bool set_flags){
     this->hints.ai_flags = set_flags? AI_PASSIVE:0;
-    getaddrinfo(hostname.c_str(), port.c_str(), &this->hints, &this->addr);
+    getaddrinfo(hostname, port, &this->hints, &this->addr);
 }
 
 SocketInfo::~SocketInfo(){

@@ -12,15 +12,16 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include <string.h>
+#include <string>
 #include <sstream>
 #include "common_socket_info.h"
 
 class Socket{
     public:
-        Socket(std::string *hostname, std::string &port, bool set_flags);
+        Socket(char hostname[], char port[], bool set_flags);
         void socket_send(char *buffer, size_t size);
-        void socket_receive(char *buffer, size_t size);
-		void socket_receive(char *buffer, size_t size, char *delim, size_t size_delim);
+        void socket_receive(char *buff, size_t size);
+		void socket_receive(char *buff, size_t size, char *delim, size_t sz_delim);
         void socket_accept(Socket &connection_socket);
         bool socket_connect();
         void socket_bind();
@@ -30,8 +31,8 @@ class Socket{
         ~Socket();
     protected:
     private:
-        std::string *hostname;
-        std::string &port;
+        char *hostname;
+        char *port;
         bool set_flags;
         SocketInfo sckt_info;
         int fd;

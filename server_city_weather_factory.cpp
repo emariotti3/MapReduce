@@ -2,6 +2,7 @@
 #include "server_city_weather.h"
 #include <stdlib.h>
 #include <sstream>
+#include <string>
 
 CityWeather* CityWeatherFactory::newCityWeather(std::string &pair_key_value){
 	std::stringstream s(pair_key_value);

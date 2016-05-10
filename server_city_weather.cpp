@@ -1,4 +1,5 @@
 #include "server_city_weather.h"
+#include <string>
 
 CityWeather::CityWeather(int day, std::string city, int temp):
 day(day),

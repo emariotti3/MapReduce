@@ -1,6 +1,8 @@
 #include "server_reducer.h"
 #include "server_city_weather.h"
 #include <algorithm>
+#include <string>
+#include <vector>
 
 typedef std::vector<CityWeather*> CityWeatherList;
 typedef std::vector<CityWeather*>::reverse_iterator CityWeatherListIt;
@@ -35,7 +37,7 @@ void Reducer::run(){
 	CityWeatherListIt it_end = this->cities.rend();
 	CityWeather *hottest_city = *it_begin;
 	std::string names = "";
-	while ((it_begin != it_end) && ((*hottest_city) == *(*it_begin)) ){
+	while ( (it_begin != it_end) && ((*hottest_city) == *(*it_begin)) ){
 		names = (*it_begin)->getCityName() + "/" + names;
 		it_begin++;
 	}

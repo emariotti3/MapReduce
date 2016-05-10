@@ -11,7 +11,7 @@ typedef std::map<int, Reducer*> ReducerMap;
 
 class RankingMaker{
 	public:
-		RankingMaker(WeatherMap *weather_info);
+		explicit RankingMaker(WeatherMap *weather_info);
 		void printOrderByTempertaure();
 		~RankingMaker();
 	private:

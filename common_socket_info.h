@@ -13,14 +13,12 @@
 class SocketInfo{
     public:
         SocketInfo();
-        void generateInfo(std::string &hostname, std::string &port, bool set_flags);
+        void generateInfo(char hostname[], char port[], bool flags);
         virtual ~SocketInfo();
-    protected:
     private:
         struct addrinfo hints;
         struct addrinfo *addr;
         friend class Socket;
-
 };
 
 #endif // SOCKETINFO_H

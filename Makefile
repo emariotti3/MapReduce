@@ -32,7 +32,7 @@ pthreads = si
 CFLAGS = -Wall -Werror -pedantic -pedantic-errors
 
 # Para optimizar el binario resultante lo mejor posible
-CFLAGS += -O0 -DNDEBUG
+CFLAGS += -O3 -DNDEBUG
 
 # Para valgrind o debug
 CFLAGS += -ggdb -DDEBUG -fno-inline

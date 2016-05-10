@@ -2,6 +2,7 @@
 #include "common_system_error.h"
 #include "common_socket_info.h"
 #include <exception>
+#include <string>
 
 #ifndef _POSIX_C_SOURCE
 #define _POSIX_C_SOURCE 1
@@ -12,19 +13,25 @@
 #define ERROR -1
 #define OK 0
 #define SIZE_RECEIVE 1
+#define MSG_ERROR_CREATE "Cannot create socket! Invalid file descriptor!"
+#define MSG_ERROR_LISTEN "socket_listen() operation invalid!"
+#define MSG_ERROR_BIND "Cannot bind socket!"
+#define MSG_ERROR_SEND "socket_send() operation invalid!"
+#define MSG_ERROR_RECV "socket_receive() operation invalid!"
+#define MSG_FD "File descriptor: "
 
-Socket::Socket(std::string *hostname, std::string &port, bool set_flags):
+Socket::Socket(char hostname[], char port[], bool set_flags):
 hostname(hostname),
 port(port),
 set_flags(set_flags){
-    this->sckt_info.generateInfo(*this->hostname, this->port, this->set_flags);
+    this->sckt_info.generateInfo(this->hostname, this->port, this->set_flags);
 
 	int new_fd = socket(this->sckt_info.addr->ai_family,
 						this->sckt_info.addr->ai_socktype,
 						this->sckt_info.addr->ai_protocol);
 
 	if (new_fd == INVALID_DESC){
-        std::string error = "Cannot create socket! Invalid file descriptor!";
+        std::string error(MSG_ERROR_CREATE);
 		throw SystemError(error, __FILE__, __LINE__);
 	}
  	this->fd = new_fd;
@@ -46,11 +53,13 @@ void Socket::socket_bind(){
 		if (success != OK){
 			std::stringstream file_desc;
 			file_desc << this->fd;
-			std::string error_desc = "Cannot bind socket! File descriptor: " + file_desc.str();
+			std::string error_desc(MSG_ERROR_BIND);
+			error_desc.append(MSG_FD);
+			error_desc.append(file_desc.str());
 			throw SystemError(error_desc, __FILE__, __LINE__);
 		}
 	}catch(std::exception &e){
-		std::string error_desc = "Cannot bind socket!";
+		std::string error_desc = MSG_ERROR_BIND;
 		throw SystemError(error_desc, __FILE__, __LINE__);
 	}
 }
@@ -65,7 +74,9 @@ void Socket::socket_listen(){
     if (success != OK){
         std::stringstream file_desc;
         file_desc << this->fd;
-        std::string error_desc = "socket_listen() operation invalid! File descriptor: " + file_desc.str();
+        std::string error_desc(MSG_ERROR_LISTEN);
+		error_desc.append(MSG_FD);
+		error_desc.append(file_desc.str());
 		throw SystemError(error_desc, __FILE__, __LINE__);
 	}
 }
@@ -115,8 +126,8 @@ void Socket::socket_send(char *buffer, size_t size){
 		sent = send(this->fd, buffer + total_sent, size - total_sent, MSG_NOSIGNAL);
 
 		if (sent < 0){
-			std::string error_desc = "socket_send() operation invalid!";
-			error_desc += "File descriptor:" + this->fd;
+			std::string error_desc = MSG_ERROR_SEND;
+			error_desc += MSG_FD + this->fd;
             throw SystemError(error_desc, __FILE__, __LINE__);
 		}
 
@@ -132,34 +143,42 @@ void Socket::socket_receive(char *buffer, size_t size){
 		pos = buffer + total_received;
 		read = recv(this->fd, pos, size - total_received, MSG_NOSIGNAL);
 		if (read < 0){
-			std::string error_desc = "socket_receive() operation invalid!";
-			error_desc += "File descriptor:" + this->fd;
+			std::string error_desc = MSG_ERROR_RECV;
+			error_desc += MSG_FD + this->fd;
             throw SystemError(error_desc, __FILE__, __LINE__);
 		}
 		total_received += read;
 	}
 }
 
-void Socket::socket_receive(char *buffer, size_t size, char *delim, size_t size_delim){
+void Socket::socket_receive(char *buff, 
+							size_t sz, 
+							char *delim, 
+							size_t sz_delim)
+{
 	size_t read = 0;
-	size_t total_received = 0;
+	size_t total = 0;
 	char *pos = NULL;
-	bool continue_recv = (total_received < size);
+	bool received_delim = false;
+	bool continue_recv = (total < sz);
 	while (continue_recv){
-		pos = buffer + total_received;
+		pos = buff + total;
 		try{
 			read = recv(this->fd, pos, SIZE_RECEIVE, MSG_NOSIGNAL);
 			if (read < 0){
-				std::string error_desc = "socket_receive() operation invalid!";
-				error_desc += "File descriptor:" + this->fd;
+				std::string error_desc = MSG_ERROR_RECV;
+				error_desc += MSG_FD + this->fd;
 				error_desc += strerror(errno);
 				throw SystemError(error_desc, __FILE__, __LINE__);
 			}
-			total_received += read;
-			continue_recv = (strncmp(delim, pos - size_delim, size_delim) != 0) && (total_received < size);
+			total += read;
+			//if (total >= sz_delim){	
+				received_delim = (strncmp(delim, pos - sz_delim + 1, sz_delim) != 0);
+			//}
+			continue_recv = (received_delim) && (total < sz);
 		}catch(std::exception &e){
-			std::string error_desc = "socket_receive() operation invalid!";
-			error_desc += "File descriptor:" + this->fd;
+			std::string error_desc = MSG_ERROR_RECV;
+			error_desc += MSG_FD + this->fd;
 			error_desc += strerror(errno);
 			throw SystemError(error_desc, __FILE__, __LINE__);
 		}

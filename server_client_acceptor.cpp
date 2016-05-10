@@ -2,14 +2,12 @@
 #include "server_thread.h"
 #include "server.h"
 #include <iostream>
+#include <string>
 
-#define HOSTNAME "localhost"
-
-ClientAcceptor::ClientAcceptor(std::string &port, Server &server):
+ClientAcceptor::ClientAcceptor(char port[], Server &server):
 port(port),
 server(server){
-	std::string host = HOSTNAME;
-	this->acceptor = new Socket(&host, port, true);
+	this->acceptor = new Socket(NULL, port, true);
 	this->acceptor->socket_bind();
     this->acceptor->socket_listen();
     this->accept_mode = true;
@@ -17,8 +15,7 @@ server(server){
 
 void ClientAcceptor::run(){
     while (this->accept_mode){
-		std::string host = HOSTNAME;
-        Socket *listener = new Socket(&host, this->port, true);
+        Socket *listener = new Socket(NULL, this->port, true);
         acceptor->socket_accept(*listener);
         if (this->accept_mode){
 			this->server.addInfoReceiver(listener);
@@ -33,6 +30,7 @@ void ClientAcceptor::endClientAccept(){
 }
 
 ClientAcceptor::~ClientAcceptor(){
+	delete this->acceptor;
 	for (size_t i = 0; i < this->created.size(); i++){
 		delete this->created[i];
 	}
